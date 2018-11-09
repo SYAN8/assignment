@@ -1,11 +1,9 @@
-# assignment
-HerdingCatsGame
 import sheffield.*;
 import java.awt.*;
 import javax.swing.*;
 import java.util.Random;
 public class HerdingCatsGame{
-  Graphics d;
+      Graphics d;
 	public static void main(String[] args){
 		Drawing mtg = new Drawing();
  		EasyReader keyboard = new EasyReader();
@@ -14,9 +12,9 @@ public class HerdingCatsGame{
             int y = 0;
             HerdingCatsGame position = new HerdingCatsGame();
             switch (typeNumber){
-			            case 1: 
+			case 1: 
                         x = position.setSquareNumber(0,200);
-				                y = position.setSquareNumber(400,600);
+				y = position.setSquareNumber(400,600);
                         break;
                   case 2:  
                         x = position.setSquareNumber(200,400);
@@ -55,9 +53,7 @@ public class HerdingCatsGame{
                         mtg.setVisible(false);
 		}
             Dog dog = new Dog(x,y);
-            System.out.println("y :  "+y);
-            Drawing mtg2 = new Drawing(dog);
-		
+            Drawing mtg1 = new Drawing(dog);		
 	}
       public int setSquareNumber(int x1, int x2){          
             Random squarePosition = new Random();
