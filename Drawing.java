@@ -3,7 +3,8 @@ import java.awt.*;
 import javax.swing.*;
 import java.util.Random;
 public class Drawing  extends JFrame{
-	public Drawing pd;
+	public static Dog dogDrawing;
+	Graphics g1;
 	MyPanel2 mp = null;
 	//constructor
 	public Drawing(){
@@ -20,8 +21,9 @@ public class Drawing  extends JFrame{
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
 	public Drawing(Dog dog){
-		mp = new MyPanel2(dog);
-		
+		dogDrawing = dog;
+		mp = new MyPanel2(Drawing.dogDrawing.getX(),Drawing.dogDrawing.getY());
+
 		this.add(mp);
 		
 		this.setTitle("Herding Cats!");
@@ -31,24 +33,29 @@ public class Drawing  extends JFrame{
 		// the location of windeow in the screen
 		this.setLocation(300,0);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	}			
+
+	}
+			
 }
 
 //我的面板。只有JPanel有画图方法，JFrame没有，故必须在JFrame中添加JPanel
 class MyPanel2 extends JPanel{
-	public static final int MAX_CATS = 10;
+	public static Cat [] catsDrawing = new Cat [Cat.MAX_CATS];
 	Graphics g;
 	//定义一个乌龟
-	// Cat c = null;
-	// Dog d = null;	
+	int dx;
+	int dy;	
 	//构造函数
     public MyPanel2(){	
-		Cat[] catsPosition = new Cat[MAX_CATS];
+		// dx = Drawing.dogDrawing.getX();
+		// dy = Drawing.dogDrawing.getY();
     }
-    public MyPanel2(Dog dog){	
-    	this.dog = dog;
-		
+    public MyPanel2(int dx, int dy){	
+		this.dx = dx;
+		this.dy = dy;
+		System.out.println("dx : "+dx+" dy : "+dy);
     }
+
     //cats' appearence
     public void drawCats(int x, int y, Graphics g){
     	//face fillOval(x,y,width,height)
@@ -77,14 +84,13 @@ class MyPanel2 extends JPanel{
    }
 	//paint method, Virtual machine system call
 	//Graphics 是绘图的重要类。你可以把他理解成一只画笔
-	public void paint(Graphics g){
+	public void paintComponent(Graphics g){
 			//1.调用父类函数完成初始化任务
 			int x;
 			int y;
-			int squareNumber;
 			Random randomPosition = new Random();
 			//这句话不能少
-			super.paint(g);
+			super.paintComponent(g);
 			//drawRect(int x, int y, int width, int height)
 			//g.drawRect(0, 0, 900, 900);
 			g.setColor(Color.pink);
@@ -95,42 +101,24 @@ class MyPanel2 extends JPanel{
 			g.drawLine(200, 0, 200, 600);
 			g.drawLine(400, 0, 400, 600);
 			//paint cats
-			for(int i = 0; i < MAX_CATS; i++){			
-				x = randomPosition.nextInt(550);
-				y = randomPosition.nextInt(550);
-				squareNumber = randomPosition.nextInt(6);
-				this.drawCats(x, y, g);
-				catsPosition[i] = new Cat(x,y,squareNumber);
-			}
-			int dx = dog.x;
-			int dy = dog.y;
-			System.out.println("dy is  "+y);
-			this.drawDog(dx, dy, g);
-					
+			//Cat.cats = new Cat[Cat.MAX_CATS];
+			if(dx==-1 && dy==-1){
+				for(int i = 0; i < Cat.MAX_CATS; i++){
+					x = randomPosition.nextInt(550);
+					y = randomPosition.nextInt(550);
+					this.drawCats(x, y, g);
+					Cat.cats[i] = new Cat(x,y);
+					catsDrawing[i] = new Cat(x,y);
+				}
+			}else{
+				this.drawDog(dx,dy,g);
+				for(int i = 0; i < catsDrawing.length; i++){
+					//重画按照之前猫的坐标
+					repaint(catsDrawing[i].getX(), catsDrawing[i].getY(), 0, 0);
+				}
+			}	
+			
 	}
-
-	// public int squareNumber(int x, int y){
-	// 	int square;
-	// 	if(x<200 && y<200){
-	// 		return square = 7;
-	// 	}else if((x>=200 && x<400) && y<200){
-	// 		return square = 8;
-	// 	}else if(x>=400 && y<200){
-	// 		return square = 9;
-	// 	}else if(x<200 && (y>=200 &&y<400)){
-	// 		return square = 4;
-	// 	}else if((x>=200 && x<400) && (y>=200 && y<400)){
-	// 		return square = 5;
-	// 	}else if(x>=400 && (y>=200 && y<400)){
-	// 		return square = 6;
-	// 	}else if(x<200 && y>=400){
-	// 		return square = 1;
-	// 	}else if((x>=200 && x<400) && y>=400){
-	// 		return square = 2;
-	// 	}else if(x>=400 && y>=400){
-	// 		return square = 3;
-	// 	}			
-	// }
 	
 }
  
