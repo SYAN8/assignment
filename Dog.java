@@ -1,13 +1,13 @@
 class Dog {
-	private int x;
-	private int y;
+	public int x;
+	public int y;
 
 	public Dog(){
 		//表示乌龟的横坐标
-		this.x = 0;
+		x = -1;
 
 		//表示乌龟的纵坐标
-		this.y = 6;
+		y = -1;
 	}
 	public Dog(int x, int y){
 		this.x = x;
@@ -25,7 +25,6 @@ class Dog {
 		this.y = y;
 	}
 	public int getY() {
-		System.out.println("y is  "+y);
 		return y;
 	}
 
