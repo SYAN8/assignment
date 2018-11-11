@@ -2,16 +2,16 @@
 import java.awt.*;
 import javax.swing.*;
 import java.util.Random;
+// this class is a frame and shows window
 public class Drawing  extends JFrame{
 	public static Dog dogDrawing;
-	Graphics g1;
-	MyPanel2 mp = null;
+	MyPanel2 myPanel = null;
 	//constructor
 	public Drawing(){
-		mp = new MyPanel2();
-		
-		this.add(mp);
-		
+		//Instantiate a drawing board
+		myPanel = new MyPanel2();
+		//put myPanel in the frame
+		this.add(myPanel);		
 		this.setTitle("Herding Cats!");
 		// the size of windeow
 		this.setSize(600,600);
@@ -20,12 +20,11 @@ public class Drawing  extends JFrame{
 		this.setLocation(300,0);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	}
+	//overload to draw dog
 	public Drawing(Dog dog){
 		dogDrawing = dog;
-		mp = new MyPanel2(Drawing.dogDrawing.getX(),Drawing.dogDrawing.getY());
-
-		this.add(mp);
-		
+		myPanel = new MyPanel2(Drawing.dogDrawing.getX(),Drawing.dogDrawing.getY());
+		this.add(myPanel);	
 		this.setTitle("Herding Cats!");
 		// the size of windeow
 		this.setSize(600,600);
@@ -38,26 +37,38 @@ public class Drawing  extends JFrame{
 			
 }
 
-//我的面板。只有JPanel有画图方法，JFrame没有，故必须在JFrame中添加JPanel
+//Only JPanel has a drawing method, so must add JPanel in JFrame.
 class MyPanel2 extends JPanel{
+	//Instantiate cats in this class
 	public static Cat [] catsDrawing = new Cat [Cat.MAX_CATS];
 	Graphics g;
-	//定义一个乌龟
+	//the coordinate of dog in this class
 	int dx;
 	int dy;	
 	//构造函数
     public MyPanel2(){	
-		// dx = Drawing.dogDrawing.getX();
-		// dy = Drawing.dogDrawing.getY();
+    	//default value is -1
+		dx = -1;
+		dy = -1;
     }
     public MyPanel2(int dx, int dy){	
 		this.dx = dx;
 		this.dy = dy;
-		System.out.println("dx : "+dx+" dy : "+dy);
     }
 
     //cats' appearence
     public void drawCats(int x, int y, Graphics g){
+    	// prevent picture overflow boundary
+    	if(x<50 || (x>200 && x<250) || (x>400 && x<450)){
+    		x = x+30;
+    	}else if((x>150 && x<200) || (x>350 && x<400) || x>550){
+    		x = x-30;
+    	}
+    	if(y<50 || (y>200 && y<250) || (y>400 && y<450)){
+    		y = y+30;
+    	}else if((y>150 && y<200) || (y>350 && y<400) || y>550){
+    		y = y-30;
+    	}
     	//face fillOval(x,y,width,height)
     	g.setColor(Color.white);
     	g.fillOval(x, y, 50, 30);
@@ -72,52 +83,65 @@ class MyPanel2 extends JPanel{
     }
  	//dog's appearence
     public void drawDog(int x, int y, Graphics g){
-    	if (x!=0 && y!=0){
-    		//face fillOval(x,y,width,height)
-	    	g.setColor(Color.black);
-	    	g.fillOval(x, y, 50, 30);
-	    	//mouth
-	    	g.setColor(Color.red);
-	    	//fillArc(int x, int y, int width, int height, int startAngle, int arcAngle)
-	    	g.fillArc(x+10, y+17, 30, 10, 180, 180);
+    	// prevent picture overflow boundary
+    	if(x<50 || (x>200 && x<250) || (x>400 && x<450)){
+    		x = x+30;
+    	}else if((x>150 && x<200) || (x>350 && x<400) || x>550){
+    		x = x-30;
     	}
-   }
+    	if(y<50 || (y>200 && y<250) || (y>400 && y<450)){
+    		y = y+30;
+    	}else if((y>150 && y<200) || (y>350 && y<400) || y>550){
+    		y = y-30;
+    	}
+		//face fillOval(x,y,width,height)
+    	g.setColor(Color.black);
+    	g.fillOval(x, y, 50, 30);
+    	//mouth
+    	g.setColor(Color.red);
+    	//fillArc(int x, int y, int width, int height, int startAngle, int arcAngle)
+    	g.fillArc(x+10, y+17, 30, 10, 180, 180);
+    }
+
 	//paint method, Virtual machine system call
-	//Graphics 是绘图的重要类。你可以把他理解成一只画笔
+	//Graphics g is a brush
 	public void paintComponent(Graphics g){
-			//1.调用父类函数完成初始化任务
+			//store the random number as the coordinate of cats
 			int x;
 			int y;
 			Random randomPosition = new Random();
-			//这句话不能少
+			//it has to be writen
 			super.paintComponent(g);
 			//drawRect(int x, int y, int width, int height)
-			//g.drawRect(0, 0, 900, 900);
 			g.setColor(Color.pink);
-			//column
+			//column,set the different square
 			g.drawLine(0, 200, 600, 200);
 			g.drawLine(0, 400, 600, 400);
-			//row
+			//row,set the different square
 			g.drawLine(200, 0, 200, 600);
 			g.drawLine(400, 0, 400, 600);
-			//paint cats
-			//Cat.cats = new Cat[Cat.MAX_CATS];
-			if(dx==-1 && dy==-1){
+			//generate the the random number as the coordinate of cats
+			if(dx == -1 && dy == -1){
+				//only paint cats
 				for(int i = 0; i < Cat.MAX_CATS; i++){
-					x = randomPosition.nextInt(550);
-					y = randomPosition.nextInt(550);
+					x = randomPosition.nextInt(600);
+					y = randomPosition.nextInt(600);
 					this.drawCats(x, y, g);
 					Cat.cats[i] = new Cat(x,y);
 					catsDrawing[i] = new Cat(x,y);
+
 				}
 			}else{
-				this.drawDog(dx,dy,g);
+				//when there are the coordinate of dog
 				for(int i = 0; i < catsDrawing.length; i++){
-					//重画按照之前猫的坐标
-					repaint(catsDrawing[i].getX(), catsDrawing[i].getY(), 0, 0);
+					//Redraw cats depends on the previous coordinates
+					x=catsDrawing[i].getX();
+					y=catsDrawing[i].getY();
+					this.drawCats(x, y, g);
 				}
+				this.drawDog(dx,dy,g);
 			}	
-			
+			Cat.cats = catsDrawing;
 	}
 	
 }
